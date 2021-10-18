@@ -1,16 +1,16 @@
 import express from "express";
 import bodyParser from "body-parser";
-import nanobuffer from "nanobuffer";
+import Nanobuffer from "nanobuffer";
 import morgan from "morgan";
 
 // set up a limited array
-const msg = new nanobuffer(50);
+const msg = new Nanobuffer(50);
 const getMsgs = () => Array.from(msg).reverse();
 
 // feel free to take out, this just seeds the server with at least one message
 msg.push({
   user: "brian",
-  text: "hi",
+  text: "Hello World",
   time: Date.now(),
 });
 
@@ -21,13 +21,24 @@ app.use(bodyParser.json());
 app.use(express.static("frontend"));
 
 app.get("/poll", function (req, res) {
-  // use getMsgs to get messages to send back
-  // write code here
+  // const isFail = Math.random() > 0.7;
+  res.status(200).json({
+    msg: getMsgs(),
+  });
 });
 
 app.post("/poll", function (req, res) {
-  // add a new message to the server
-  // write code here
+  const { user, text } = req.body;
+
+  msg.push({
+    user,
+    text,
+    time: Date.now(),
+  });
+
+  res.json({
+    status: "ok",
+  });
 });
 
 // start the server
